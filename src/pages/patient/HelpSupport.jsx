@@ -88,7 +88,7 @@ export default function HelpSupport() {
           <p className="mt-1 text-[11px] leading-5 text-ink-900/65 sm:text-xs">Can't find an answer? Contact our support team and let us solve your problem.</p>
           <Button onClick={() => navigate('/patient/contact-us')} size="sm" className="mt-2 rounded-md px-3 py-1.5 text-xs !shadow-none">Contact Us</Button>
         </div>
-        <img src="/images/doctor7.png" alt="Support team member" className="absolute bottom-0 right-2 h-[100px] w-[34%] object-contain object-right-bottom sm:right-10 sm:h-[120px] sm:w-[25%]" />
+        <img src="/images/doctor8.png" alt="Support team member" className="absolute bottom-0 right-2 h-[100px] w-[34%] object-contain object-right-bottom sm:right-10 sm:h-[120px] sm:w-[25%]" />
       </Card>
     </div>
   );

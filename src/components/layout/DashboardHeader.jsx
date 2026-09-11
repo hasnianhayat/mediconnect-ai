@@ -27,9 +27,9 @@ export default function DashboardHeader({ role = 'Patient', notifications = 3, o
             </span>
           )}
         </button>
-        <button type="button" aria-label={`Open ${role} account settings`} onClick={() => navigate(profilePath)} className="grid h-9 w-9 place-items-center rounded-full bg-brand-100 text-brand-600 transition hover:bg-brand-200">
+        {/* <button type="button" aria-label={`Open ${role} account settings`} onClick={() => navigate(profilePath)} className="grid h-9 w-9 place-items-center rounded-full bg-brand-100 text-brand-600 transition hover:bg-brand-200">
           <User size={16} />
-        </button>
+        </button> */}
         <div className="relative">
           <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 rounded-full border border-sand-200 py-1 pl-1 pr-2 hover:bg-sand-50 sm:gap-2 sm:py-1.5 sm:pl-1.5 sm:pr-3">
             <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-100 text-brand-600">
