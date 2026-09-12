@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarClock, Trash2, Info, Clock3, Save, Pencil, X } from 'lucide-react';
+import { CalendarClock, Trash2, Info, Clock3, Save, ChevronDown } from 'lucide-react';
 import Button from '../../components/common/Button';
 
 const initialDays = [
@@ -12,31 +12,42 @@ const initialDays = [
   { day: 'Sunday', on: false, start: '--:-- --', end: '--:-- --', secondStart: '', secondEnd: '' },
 ];
 
+const timeOptions = [
+  '8:00 AM', '8:20 AM', '8:40 AM', '9:00 AM', '9:20 AM', '9:40 AM', '10:00 AM', '10:20 AM', '10:40 AM',
+  '11:00 AM', '11:20 AM', '11:40 AM', '12:00 PM', '12:20 PM', '12:40 PM', '1:00 PM', '1:20 PM', '1:40 PM',
+  '2:00 PM', '2:20 PM', '2:40 PM', '3:00 PM', '3:20 PM', '3:40 PM', '4:00 PM', '4:20 PM', '4:40 PM',
+  '5:00 PM', '5:20 PM', '5:40 PM', '6:00 PM', '6:20 PM', '6:40 PM', '7:00 PM', '7:20 PM', '7:40 PM',
+  '8:00 PM', '8:20 PM', '8:40 PM'
+];
+
 export default function ScheduleManager() {
   const [days, setDays] = useState(initialDays);
-  const [editing, setEditing] = useState(null);
-  const [draft, setDraft] = useState({ start: '', end: '' });
   const [saved, setSaved] = useState(false);
-  const toggle = (i) => setDays((d) => d.map((x, idx) => (idx === i ? { ...x, on: !x.on } : x)));
-  const startEdit = (dayIndex, shift) => {
-    const day = days[dayIndex];
-    setEditing({ dayIndex, shift });
-    setDraft({
-      start: shift === 'first' ? day.start : day.secondStart,
-      end: shift === 'first' ? day.end : day.secondEnd,
-    });
-  };
-  const cancelEdit = () => setEditing(null);
-  const saveEdit = () => {
-    if (!draft.start.trim() || !draft.end.trim()) return;
-    setDays((current) => current.map((day, index) => {
-      if (!editing || index !== editing.dayIndex) return day;
-      return editing.shift === 'first'
-        ? { ...day, start: draft.start.trim(), end: draft.end.trim() }
-        : { ...day, secondStart: draft.start.trim(), secondEnd: draft.end.trim() };
-    }));
+
+  const toggle = (i) => {
     setSaved(false);
-    setEditing(null);
+    setDays((d) => d.map((x, idx) => (idx === i ? { ...x, on: !x.on } : x)));
+  };
+
+  const deleteDay = (dayIndex) => {
+    setSaved(false);
+    setDays((current) => current.filter((_, index) => index !== dayIndex));
+  };
+
+  const updateTimeRange = (dayIndex, shift, field, value) => {
+    setSaved(false);
+    setDays((current) => current.map((day, index) => {
+      if (index !== dayIndex) return day;
+
+      if (shift === 'first') {
+        return { ...day, [field]: value };
+      }
+
+      return {
+        ...day,
+        [field === 'start' ? 'secondStart' : 'secondEnd']: value,
+      };
+    }));
   };
 
   return (
@@ -64,7 +75,7 @@ export default function ScheduleManager() {
 
         <p className="mb-6 flex items-start gap-3 bg-brand-50 p-4 text-sm font-semibold leading-6 text-brand-700">
           <Info size={21} className="mt-0.5 shrink-0" />
-          <span><strong>Note:</strong> Your appointment slots will be created automatically in 15-minute intervals based on the above timings.</span>
+          <span><strong>Note:</strong> Your appointment slots will be created automatically in 20-minute intervals based on the above timings.</span>
         </p>
 
         <div className="hidden grid-cols-[100px_90px_minmax(260px,1fr)_minmax(260px,1fr)_32px] items-center gap-4 px-3 pb-3 text-[11px] font-bold text-ink-900/60 lg:grid">
@@ -72,7 +83,7 @@ export default function ScheduleManager() {
         </div>
         <div className="space-y-3">
           {days.map((d, i) => (
-            <div key={d.day} className="grid gap-4 bg-white p-4 sm:p-5 lg:grid-cols-[100px_90px_minmax(260px,1fr)_minmax(260px,1fr)_32px] lg:items-center lg:gap-4">
+            <div key={d.day} className="card grid max-w-full min-w-0 gap-4 overflow-hidden p-4 sm:p-5 lg:grid-cols-[100px_90px_minmax(0,1fr)_minmax(0,1fr)_36px] lg:items-center lg:gap-4">
               <p className="font-display text-sm font-bold text-brand-700">{d.day}</p>
               <button
                 type="button"
@@ -82,22 +93,87 @@ export default function ScheduleManager() {
               >
                 <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all ${d.on ? 'left-6' : 'left-1'}`} />
               </button>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-[auto_minmax(100px,1fr)_auto_minmax(100px,1fr)] sm:items-center">
-                <span className="text-xs font-bold text-ink-900/55">Start</span>
-                {editing?.dayIndex === i && editing.shift === 'first' ? <input value={draft.start} onChange={(e) => setDraft({ ...draft, start: e.target.value })} aria-label={`${d.day} first shift start`} className="field-input min-w-0 rounded-lg bg-sand-50 px-3 py-2 text-xs" /> : <span className="flex items-center justify-between rounded-lg bg-sand-50 px-3 py-2 text-xs font-bold text-ink-900"><Clock3 size={15} className="text-brand-600" />{d.start}</span>}
-                <span className="text-xs font-bold text-ink-900/55">End</span>
-                {editing?.dayIndex === i && editing.shift === 'first' ? <input value={draft.end} onChange={(e) => setDraft({ ...draft, end: e.target.value })} aria-label={`${d.day} first shift end`} className="field-input min-w-0 rounded-lg bg-sand-50 px-3 py-2 text-xs" /> : <span className="flex items-center justify-between rounded-lg bg-sand-50 px-3 py-2 text-xs font-bold text-ink-900"><Clock3 size={15} className="text-brand-600" />{d.end}</span>}
-                <button type="button" onClick={() => startEdit(i, 'first')} className="col-span-2 inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-800 sm:col-span-4 sm:justify-self-end"><Pencil size={13} /> Edit</button>
+
+              <div className="min-w-0">
+                <div className="grid min-w-0 w-full grid-cols-2 gap-3 sm:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center">
+                  <span className="text-xs font-bold text-ink-900/55">Start</span>
+                  <div className="relative min-w-0 w-full">
+                    <select
+                      value={d.start}
+                      onChange={(e) => updateTimeRange(i, 'first', 'start', e.target.value)}
+                      aria-label={`${d.day} first shift start`}
+                      className="field-input min-w-0 w-full appearance-none rounded-lg bg-sand-50 px-3 py-2 pr-8 text-xs"
+                    >
+                      <option value="">Select start time</option>
+                      {timeOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-brand-600" />
+                  </div>
+
+                  <span className="text-xs font-bold text-ink-900/55">End</span>
+                  <div className="relative min-w-0 w-full">
+                    <select
+                      value={d.end}
+                      onChange={(e) => updateTimeRange(i, 'first', 'end', e.target.value)}
+                      aria-label={`${d.day} first shift end`}
+                      className="field-input min-w-0 w-full appearance-none rounded-lg bg-sand-50 px-3 py-2 pr-8 text-xs"
+                    >
+                      <option value="">Select end time</option>
+                      {timeOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-brand-600" />
+                  </div>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-[auto_minmax(100px,1fr)_auto_minmax(100px,1fr)] sm:items-center">
-                <span className="text-xs font-bold text-ink-900/55">Start</span>
-                {editing?.dayIndex === i && editing.shift === 'second' ? <input value={draft.start} onChange={(e) => setDraft({ ...draft, start: e.target.value })} placeholder="5:00 PM" aria-label={`${d.day} second shift start`} className="field-input min-w-0 rounded-lg bg-sand-50 px-3 py-2 text-xs" /> : <span className="flex items-center justify-between rounded-lg bg-sand-50 px-3 py-2 text-xs font-bold text-ink-900/45"><Clock3 size={15} className="text-teal-600" />{d.secondStart || '--:-- --'}</span>}
-                <span className="text-xs font-bold text-ink-900/55">End</span>
-                {editing?.dayIndex === i && editing.shift === 'second' ? <input value={draft.end} onChange={(e) => setDraft({ ...draft, end: e.target.value })} placeholder="8:00 PM" aria-label={`${d.day} second shift end`} className="field-input min-w-0 rounded-lg bg-sand-50 px-3 py-2 text-xs" /> : <span className="flex items-center justify-between rounded-lg bg-sand-50 px-3 py-2 text-xs font-bold text-ink-900/45"><Clock3 size={15} className="text-teal-600" />{d.secondEnd || '--:-- --'}</span>}
-                <button type="button" onClick={() => startEdit(i, 'second')} className="col-span-2 inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-800 sm:col-span-4 sm:justify-self-end"><Pencil size={13} /> Edit Second Shift</button>
-                {editing?.dayIndex === i && <div className="col-span-2 flex gap-2 sm:col-span-4 sm:justify-end"><button type="button" onClick={saveEdit} className="inline-flex items-center gap-1 rounded-lg bg-brand-600 px-3 py-2 text-xs font-bold text-white hover:bg-brand-700"><Save size={13} /> Save</button><button type="button" onClick={cancelEdit} className="inline-flex items-center gap-1 rounded-lg border border-sand-200 px-3 py-2 text-xs font-bold text-ink-900/70 hover:bg-sand-100"><X size={13} /> Cancel</button></div>}
+
+              <div className="min-w-0">
+                <div className="grid min-w-0 w-full grid-cols-2 gap-3 sm:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center">
+                  <span className="text-xs font-bold text-ink-900/55">Start</span>
+                  <div className="relative min-w-0 w-full">
+                    <select
+                      value={d.secondStart}
+                      onChange={(e) => updateTimeRange(i, 'second', 'start', e.target.value)}
+                      aria-label={`${d.day} second shift start`}
+                      className="field-input min-w-0 w-full appearance-none rounded-lg bg-sand-50 px-3 py-2 pr-8 text-xs"
+                    >
+                      <option value="">Select start time</option>
+                      {timeOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-brand-600" />
+                  </div>
+
+                  <span className="text-xs font-bold text-ink-900/55">End</span>
+                  <div className="relative min-w-0 w-full">
+                    <select
+                      value={d.secondEnd}
+                      onChange={(e) => updateTimeRange(i, 'second', 'end', e.target.value)}
+                      aria-label={`${d.day} second shift end`}
+                      className="field-input min-w-0 w-full appearance-none rounded-lg bg-sand-50 px-3 py-2 pr-8 text-xs"
+                    >
+                      <option value="">Select end time</option>
+                      {timeOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-brand-600" />
+                  </div>
+                </div>
               </div>
-              <button type="button" aria-label={`Remove ${d.day} schedule`} className="justify-self-start text-coral-500 hover:text-coral-600 lg:justify-self-center"><Trash2 size={20} /></button>
+
+              <button
+                type="button"
+                aria-label={`Remove ${d.day} schedule`}
+                onClick={() => deleteDay(i)}
+                className="justify-self-start text-coral-500 hover:text-coral-600 lg:justify-self-center"
+              >
+                <Trash2 size={20} />
+              </button>
             </div>
           ))}
         </div>

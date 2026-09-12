@@ -6,7 +6,8 @@ import Logo from '../common/Logo';
 export default function DashboardHeader({ role = 'Patient', notifications = 3, onMenuClick }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const profilePath = role === 'Doctor' ? '/doctor/profile' : '/patient/profile';
+  const profilePath = role === 'Doctor' ? '/doctor/profile' : role === 'Admin' ? '/admin/settings' : '/patient/profile';
+  const logoutPath = role === 'Admin' ? '/admin/login' : '/login';
 
   return (
     <header className="sticky top-0 z-30 flex min-w-0 items-center justify-between border-b border-sand-200 bg-white/90 px-3 py-3 backdrop-blur sm:px-5 sm:py-4 lg:px-6">
@@ -43,7 +44,7 @@ export default function DashboardHeader({ role = 'Patient', notifications = 3, o
               <button onClick={() => { setOpen(false); navigate(profilePath); }} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-ink-900/70 hover:bg-sand-50">
                 <Settings size={15} /> Settings
               </button>
-              <button onClick={() => { localStorage.removeItem('mediconnect-session'); navigate('/login'); }} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-coral-500 hover:bg-coral-500/5">
+              <button onClick={() => { localStorage.removeItem('mediconnect-session'); navigate(logoutPath); }} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-coral-500 hover:bg-coral-500/5">
                 <LogOut size={15} /> Logout
               </button>
             </div>

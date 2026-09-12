@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-export const APPOINTMENT_DURATION_MINUTES = 40;
-const SLOTS = ['10:00 AM', '10:40 AM', '11:20 AM', '12:00 PM', '12:40 PM', '01:20 PM', '02:00 PM', '02:40 PM'];
+export const APPOINTMENT_DURATION_MINUTES = 20;
+const SLOTS = ['10:00 AM', '10:20 AM', '10:40 AM', '11:00 AM', '11:20 AM', '11:40 AM', '12:00 PM', '12:20 PM'];
 
 export default function TimeSlotPicker({ slots = SLOTS, onSelect = () => {} }) {
   const [active, setActive] = useState(slots[2]);
   return (
     <div>
-      <div className="grid grid-cols-4 gap-2.5">
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
         {slots.map((s) => (
           <button
             key={s}

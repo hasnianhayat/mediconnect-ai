@@ -1,4 +1,6 @@
-import { CalendarCheck, CalendarClock, Users, CheckCircle2, FileText, ArrowRight, Star } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CalendarCheck, CalendarClock, Users, CheckCircle2, FileText, ArrowRight, ArrowLeft, Star } from 'lucide-react';
 import WelcomeBanner from '../../components/dashboard/WelcomeBanner';
 import Card from '../../components/common/Card';
 import Avatar from '../../components/common/Avatar';
@@ -28,6 +30,16 @@ const statTones = {
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const [feedbackIndex, setFeedbackIndex] = useState(0);
+  const visibleCount = Math.min(3, feedback.length);
+
+  const goToFeedback = (direction) => {
+    setFeedbackIndex((current) => (current + direction + feedback.length) % feedback.length);
+  };
+
+  const visibleFeedback = Array.from({ length: visibleCount }, (_, index) => feedback[(feedbackIndex + index) % feedback.length]);
+
   return (
     <div className="space-y-6">
       <WelcomeBanner
@@ -62,7 +74,7 @@ export default function Dashboard() {
         <Card className="p-4 sm:p-5">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h3 className="font-display text-sm font-semibold text-ink-900 sm:text-base">Recent Patient Reports</h3>
-            <button className="flex shrink-0 items-center gap-1 text-xs font-semibold text-brand-600 hover:underline">
+            <button type="button" onClick={() => navigate('/doctor/reports')} className="flex shrink-0 items-center gap-1 text-xs font-semibold text-brand-600 hover:underline">
               View All Reports <ArrowRight size={14} />
             </button>
           </div>
@@ -77,15 +89,14 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-          <Button variant="outline" size="sm" className="mt-4" icon={ArrowRight} iconPosition="right">View All Reports</Button>
         </Card>
-        <Card className="flex flex-col justify-between p-4 sm:p-5">
+        <Card onClick={() => navigate('/doctor/ai-assistant')} className="flex cursor-pointer flex-col justify-between p-4 transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5">
           <h3 className="font-display text-sm font-semibold text-ink-900 sm:text-base">AI Assistant</h3>
           <div className="mt-3 flex items-center gap-4">
             <img src="/images/ai.png" alt="AI assistant" className="h-24 w-28 shrink-0 object-contain sm:h-28 sm:w-36" />
             <p className="text-xs font-semibold leading-5 text-ink-900 sm:text-sm">Ask me anything about your patients, reports or medical info.</p>
           </div>
-          <Button className="mt-3 self-start" icon={ArrowRight} iconPosition="right">Ask AI Assistant</Button>
+          <Button type="button" className="mt-3 self-start" icon={ArrowRight} iconPosition="right">Ask AI Assistant</Button>
         </Card>
       </div>
 
@@ -121,10 +132,13 @@ export default function Dashboard() {
       <Card className="p-4 sm:p-5">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-sm font-semibold text-ink-900 sm:text-base">Patient Feedback</h3>
-          <div className="flex gap-1 text-brand-600"><ArrowRight size={16} className="rotate-180" /><ArrowRight size={16} /></div>
+          <div className="flex gap-1 text-brand-600">
+            <button type="button" aria-label="Previous patient feedback" onClick={() => goToFeedback(-1)} className="rounded-md p-1 hover:bg-brand-50"><ArrowLeft size={16} /></button>
+            <button type="button" aria-label="Next patient feedback" onClick={() => goToFeedback(1)} className="rounded-md p-1 hover:bg-brand-50"><ArrowRight size={16} /></button>
+          </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {feedback.map((f) => (
+          {visibleFeedback.map((f) => (
             <div key={f.name} className="min-w-0 rounded-xl bg-sand-50 p-3">
               <div className="mb-2 flex items-center gap-2">
                 <Avatar name={f.name} size={38} />

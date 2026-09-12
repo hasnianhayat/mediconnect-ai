@@ -109,7 +109,7 @@ export default function Footer() {
             <div className="flex overflow-hidden rounded-md border border-white/20 bg-white">
               <input
                 type="text"
-                placeholder="Enter your email"
+                placeholder="Enter your feedback"
                 className="w-full border-0 bg-transparent px-3 py-2 text-xs text-slate-700 placeholder:text-slate-400 outline-none"
               />
               <button className="bg-[#2459ef] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#164fe0]">

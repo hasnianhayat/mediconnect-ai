@@ -77,8 +77,13 @@ export default function Dashboard() {
           <RecentAppointments items={patientAppointments.upcoming} />
         </Card>
         <Card className="!border-0 !shadow-none p-4">
-          <h3 className="mb-3 font-display text-sm font-semibold text-ink-900">Recent Reports</h3>
-          <p className="rounded-xl bg-sand-50 py-8 text-center text-sm font-bold text-ink-900">No recent reports available at the moment.</p>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="font-display text-sm font-semibold text-ink-900">Recent Reports</h3>
+            <button type="button" onClick={() => navigate('/patient/reports')} className="text-xs font-semibold text-brand-600 hover:underline">View All Reports</button>
+          </div>
+          <div className="rounded-xl bg-sand-50 py-8 text-center">
+            <p className="text-sm font-bold text-ink-900">No recent reports available at the moment.</p>
+          </div>
         </Card>
       </div>
     </div>

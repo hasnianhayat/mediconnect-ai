@@ -1,4 +1,5 @@
 import { Stethoscope, Users, CalendarCheck, Clock, AlertTriangle, ShieldCheck, FileText, CalendarDays, UserRound, MessageCircleWarning, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '../../components/common/Avatar';
 import AdminStatCard from '../../components/admin/AdminStatCard';
 import Card from '../../components/common/Card';
@@ -33,6 +34,8 @@ const reports = [
 ];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 rounded-2xl bg-white p-6 sm:flex-row sm:items-center sm:justify-between">
@@ -76,7 +79,7 @@ export default function Dashboard() {
         <Card>
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-display font-semibold text-ink-900">Doctor Pending Queue</h3>
-            <button className="text-xs font-semibold text-brand-600 hover:underline">View All</button>
+            <button type="button" onClick={() => navigate('/admin/pending-doctor-queue')} className="text-xs font-semibold text-brand-600 hover:underline">View All</button>
           </div>
           <div className="space-y-3">
             {pendingDoctorQueue.slice(0, 5).map((d) => (
@@ -86,7 +89,7 @@ export default function Dashboard() {
                   <p className="text-sm font-semibold text-ink-900">{d.name}</p>
                   <p className="text-xs text-ink-900/40">{d.specialty}</p>
                 </div>
-                <Button size="sm" variant="outline">Review</Button>
+                <Button size="sm" variant="outline" onClick={() => navigate('/admin/pending-doctor-queue')}>Review</Button>
               </div>
             ))}
           </div>
@@ -97,7 +100,7 @@ export default function Dashboard() {
         <Card className="min-w-0 p-4 sm:p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="flex items-center gap-2 font-display font-semibold text-ink-900"><CalendarDays size={17} className="text-brand-600" />Recent Activity</h3>
-            <button className="text-xs font-semibold text-brand-600 hover:underline">View All</button>
+            <button type="button" onClick={() => navigate('/admin/manage-appointments')} className="text-xs font-semibold text-brand-600 hover:underline">View All</button>
           </div>
           <div className="space-y-2">
             {activity.map((item) => {
@@ -118,7 +121,7 @@ export default function Dashboard() {
         <Card className="min-w-0 p-4 sm:p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="flex items-center gap-2 font-display font-semibold text-ink-900"><FileText size={17} className="text-brand-600" />Reports</h3>
-            <button className="text-xs font-semibold text-brand-600 hover:underline">View All</button>
+            <button type="button" onClick={() => navigate('/admin/reports')} className="text-xs font-semibold text-brand-600 hover:underline">View All</button>
           </div>
           <div className="space-y-2">
             {reports.map((report) => {
