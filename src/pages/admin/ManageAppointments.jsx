@@ -10,7 +10,7 @@ import Modal from '../../components/common/Modal';
 import { doctorAppointmentQueue, doctors, specialties, regions } from '../../data/doctors';
 
 const appointmentDoctors = ['Dr. Waqas Ahmed', 'Dr. Ayesha Malik', 'Dr. Usman Tariq', 'Dr. Fatima Rizvi', 'Dr. Ali Raza'];
-const patientImages = ['/images/doctor3.png', '/images/doctor4.png', '/images/doctor5.png', '/images/doctor6.png', '/images/doctor7.png'];
+const patientImages = ['/images/image.png', '/images/doctor4.png', '/images/image.png', '/images/image.png', '/images/image.png'];
 
 const initialAppointments = doctorAppointmentQueue.map((appointment, index) => ({
   ...appointment,
